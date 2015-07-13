@@ -19,10 +19,14 @@ class MultiSiteMiddleware(object):
             current = request.get_host()
             # don't hit DB if is same as last
             if self.last_current != current:
-                current_site = Site.objects.get(domain=current)
-                Page.objects.active_filters.pop('current_site', None)
-                Page.objects.add_to_active_filters(Q(site=current_site),
-                                                   key='current_site')
+                try:
+                    current_site = Site.objects.get(domain=current)
+                except Site.DoesNotExist:
+                    pass
+                else:
+                    Page.objects.active_filters.pop('current_site', None)
+                    Page.objects.add_to_active_filters(Q(site=current_site),
+                                                       key='current_site')
+                    # patch settings which is used for feincms cache keys
+                    settings.SITE_ID = current_site.id
                 self.last_current = current
-                # patch settings which is used for feincms cache keys
-                settings.SITE_ID = current_site.id
