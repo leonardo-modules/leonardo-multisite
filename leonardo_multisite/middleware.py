@@ -1,5 +1,7 @@
 
 from django.conf import settings
+from django.contrib.sites.models import Site
+from django.db.models import Q
 from leonardo.module.web.models import Page
 
 
@@ -12,15 +14,15 @@ class MultiSiteMiddleware(object):
 
     def process_request(self, request):
 
-        # basic support for multisite
         if getattr(settings, 'MULTISITE_ENABLED', False):
 
             current = request.get_host()
-
+            # don't hit DB if is same as last
             if self.last_current != current:
+                current_site = Site.objects.get(domain__icontains=current)
                 Page.objects.active_filters.pop('current_site', None)
-                Page.objects.add_to_active_filters(
-                    lambda queryset: queryset.filter(
-                        site__domain=str(current)),
-                    key='current_site')
+                Page.objects.add_to_active_filters(Q(site=current_site),
+                                                   key='current_site')
                 self.last_current = current
+                # patch settings which is used for feincms cache keys
+                settings.SITE_ID = current_site.id
