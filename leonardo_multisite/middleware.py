@@ -29,4 +29,5 @@ class MultiSiteMiddleware(object):
                                                        key='current_site')
                     # patch settings which is used for feincms cache keys
                     settings.SITE_ID = current_site.id
+                    settings.SITE_NAME = current_site.name
                 self.last_current = current
