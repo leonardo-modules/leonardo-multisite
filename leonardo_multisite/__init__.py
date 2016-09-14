@@ -11,6 +11,12 @@ LEONARDO_MIDDLEWARES = ['leonardo_multisite.middleware.MultiSiteMiddleware']
 LEONARDO_CONFIG = {
     'MULTISITE_ENABLED': (False, _(
         'Enable multi site request processing')),
+    'MULTISITE_ALIASES': ({
+        'example.com': ['localhost']
+    }, _(
+        'Setup domain aliases.')),
+    'MULTISITE_FALLBACK': ('example.com', _(
+        'Fallback site.')),
     'SESSION_COOKIE_DOMAIN': ('', _(
         '''If you set your session cookie domain to start with
         a "." character it will let you handle wildcard sub-domains
