@@ -28,7 +28,7 @@ For FeinCMS users
 
 settings.py::
 
-    MULTI_SITE_ENABLED = True
+    MULTISITE_ENABLED = True
 
     MIDDLEWARES += ('leonardo_multisite.middleware.MultiSiteMiddleware',)
 
